@@ -1,0 +1,6 @@
+nom,prenom,email,telephone,date_naissance,numero_secu,adresse,situation_familiale,nombre_ayants_droit,mutuelle_actuelle,niveau_couverture,statut,notes
+Dupont,Jean,jean.dupont@email.com,0123456789,1980-01-15,1234567890123,123 Rue de la Paix 75001 Paris,marie,2,Harmonie Mutuelle,standard,prospect,Premier contact
+Martin,Marie,marie.martin@email.com,0987654321,1985-05-20,2345678901234,456 Avenue des Champs 69000 Lyon,celibataire,0,MGEN,premium,client,Client fidèle
+Bernard,Pierre,pierre.bernard@email.com,0567890123,1975-11-10,3456789012345,789 Boulevard République 13000 Marseille,marie,3,Malakoff Humanis,standard,prospect,À recontacter
+Moreau,Sophie,sophie.moreau@email.com,0654321098,1990-03-25,4567890123456,321 Rue du Commerce 31000 Toulouse,marie,1,Mutuelle Générale,premium,client,Contrat renouvelé
+Lefebvre,Thomas,thomas.lefebvre@email.com,0789012345,1982-07-08,5678901234567,654 Avenue de la Liberté 59000 Lille,celibataire,0,AG2R La Mondiale,standard,prospect,Devis envoyé

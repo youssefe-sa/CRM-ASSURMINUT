@@ -9,6 +9,8 @@ import { ZodError } from "zod";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import * as XLSX from "xlsx";
+import csv from "csv-parser";
 import "./types";
 
 // Configuration multer pour l'upload de fichiers
@@ -36,6 +38,35 @@ const upload = multer({
       cb(null, true);
     } else {
       cb(new Error('Type de fichier non supporté'));
+    }
+  }
+});
+
+// Configuration multer pour l'import de fichiers Excel/CSV
+const importStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = path.join(process.cwd(), "uploads", "imports");
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const importUpload = multer({ 
+  storage: importStorage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['.xlsx', '.xls', '.csv'];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowedTypes.includes(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Type de fichier non supporté. Seuls les fichiers .xlsx, .xls et .csv sont acceptés.'));
     }
   }
 });
@@ -177,6 +208,103 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Client supprimé avec succès" });
     } catch (error) {
       res.status(500).json({ message: "Erreur lors de la suppression du client" });
+    }
+  });
+
+  // Route d'import de portefeuille client
+  app.post("/api/clients/import", requireAuth, importUpload.single('file'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "Aucun fichier téléversé" });
+      }
+
+      if (!req.session.user) {
+        return res.status(401).json({ message: "Non autorisé" });
+      }
+
+      const filePath = req.file.path;
+      const ext = path.extname(req.file.originalname).toLowerCase();
+      let clientsData: any[] = [];
+
+      if (ext === '.csv') {
+        // Traitement des fichiers CSV
+        const results: any[] = [];
+        await new Promise((resolve, reject) => {
+          fs.createReadStream(filePath)
+            .pipe(csv())
+            .on('data', (data) => results.push(data))
+            .on('end', resolve)
+            .on('error', reject);
+        });
+        clientsData = results;
+      } else if (ext === '.xlsx' || ext === '.xls') {
+        // Traitement des fichiers Excel
+        const workbook = XLSX.readFile(filePath);
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        clientsData = XLSX.utils.sheet_to_json(worksheet);
+      }
+
+      // Normaliser les noms de colonnes et créer les clients
+      const importedClients = [];
+      const errors = [];
+
+      for (let i = 0; i < clientsData.length; i++) {
+        const row = clientsData[i];
+        try {
+          // Mapper les colonnes courantes vers le schéma de base
+          const clientData = {
+            nom: row.nom || row.Nom || row.NOM || row.lastname || row.last_name || '',
+            prenom: row.prenom || row.Prenom || row.PRENOM || row.firstname || row.first_name || '',
+            email: row.email || row.Email || row.EMAIL || row.mail || '',
+            telephone: row.telephone || row.Telephone || row.TELEPHONE || row.phone || row.tel || '',
+            dateNaissance: row.date_naissance || row.dateNaissance || row.birth_date || row.naissance || null,
+            numeroSecu: row.numero_secu || row.numeroSecu || row.secu || row.social_security || '',
+            adresse: row.adresse || row.Adresse || row.ADRESSE || row.address || '',
+            situationFamiliale: row.situation_familiale || row.situationFamiliale || row.marital_status || 'celibataire',
+            nombreAyantsDroit: parseInt(row.nombre_ayants_droit || row.ayants_droit || row.dependents || '0') || 0,
+            mutuelleActuelle: row.mutuelle_actuelle || row.mutuelleActuelle || row.current_insurance || '',
+            niveauCouverture: row.niveau_couverture || row.niveauCouverture || row.coverage_level || 'base',
+            statut: row.statut || row.Statut || row.STATUS || row.status || 'prospect',
+            notes: row.notes || row.Notes || row.NOTES || row.comments || '',
+            createdBy: req.session.user.id
+          };
+
+          // Valider et créer le client
+          const validatedClient = insertClientSchema.parse(clientData);
+          const client = await storage.createClient(validatedClient);
+          importedClients.push(client);
+        } catch (error) {
+          errors.push({
+            ligne: i + 1,
+            erreur: error instanceof ZodError ? error.errors : error.message || 'Erreur inconnue'
+          });
+        }
+      }
+
+      // Nettoyer le fichier temporaire
+      fs.unlinkSync(filePath);
+
+      res.json({
+        message: `Import terminé: ${importedClients.length} clients importés`,
+        importedCount: importedClients.length,
+        errorCount: errors.length,
+        clients: importedClients,
+        errors: errors
+      });
+
+    } catch (error) {
+      console.error('Erreur lors de l\'import:', error);
+      
+      // Nettoyer le fichier temporaire en cas d'erreur
+      if (req.file?.path && fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      
+      res.status(500).json({ 
+        message: "Erreur lors de l'import du fichier",
+        error: error.message
+      });
     }
   });
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Search, Plus, Edit, Trash2, FileText, Phone } from "lucide-react";
+import { Search, Plus, Edit, Trash2, FileText, Phone, Upload } from "lucide-react";
 import { Layout } from "@/components/layout/layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,12 +10,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { NewClientModal } from "@/components/modals/new-client-modal";
 import { NewDevisModal } from "@/components/modals/new-devis-modal";
 import { CallLogModal } from "@/components/modals/call-log-modal";
+import { ImportClientsModal } from "@/components/modals/import-clients-modal";
 import type { Client } from "@shared/schema";
 
 export default function Clients() {
   const [showNewClientModal, setShowNewClientModal] = useState(false);
   const [showNewDevisModal, setShowNewDevisModal] = useState(false);
   const [showCallLogModal, setShowCallLogModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState<number | undefined>();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -74,6 +76,14 @@ export default function Clients() {
                   className="pl-10"
                 />
               </div>
+              <Button 
+                onClick={() => setShowImportModal(true)} 
+                variant="outline"
+                className="flex items-center space-x-2"
+              >
+                <Upload className="h-4 w-4" />
+                <span>Importer</span>
+              </Button>
               <Button onClick={() => setShowNewClientModal(true)}>
                 <Plus className="h-4 w-4 mr-2" />
                 Nouveau client
@@ -163,6 +173,10 @@ export default function Clients() {
           setSelectedClientId(undefined);
         }}
         selectedClientId={selectedClientId}
+      />
+      <ImportClientsModal 
+        open={showImportModal} 
+        onClose={() => setShowImportModal(false)} 
       />
     </Layout>
   );
