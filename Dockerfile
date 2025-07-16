@@ -3,14 +3,14 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Installer les dépendances système
+# Installer les dépendances système nécessaires
 RUN apk add --no-cache python3 make g++ postgresql-client curl
 
 # Copier package.json et package-lock.json
 COPY package*.json ./
 
-# Installer toutes les dépendances
-RUN npm ci
+# Installer toutes les dépendances, y compris devDependencies
+RUN npm install
 
 # Copier le code source
 COPY . .
@@ -18,7 +18,7 @@ COPY . .
 # Créer les dossiers nécessaires
 RUN mkdir -p uploads dist
 
-# Build l'application
+# Build l'application (vite et esbuild)
 RUN npm run build
 
 # Vérifier que le build a réussi
@@ -27,7 +27,7 @@ RUN ls -la dist/
 # Exposer le port
 EXPOSE 5000
 
-# Variables d'environnement
+# Variables d'environnement (pour l'exécution seulement)
 ENV NODE_ENV=production
 ENV PORT=5000
 
