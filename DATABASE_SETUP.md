@@ -120,11 +120,16 @@ Pour optimiser les performances :
 ## Statistiques Actuelles
 
 - **Utilisateurs:** 9 (1 admin + 8 agents)
-- **Clients:** 3 (1 client initial + 2 clients importés)
+- **Clients:** 9 (1 client initial + 8 clients importés)
 - **Devis:** 1
 - **Documents:** 1
 - **Rappels:** 0
 - **Appels:** 1
+
+### Répartition des clients par statut
+- **Prospects:** 6 clients
+- **Clients actifs:** 2 clients  
+- **Nouveaux:** 1 client
 
 ## Fonctionnalités d'Import
 
