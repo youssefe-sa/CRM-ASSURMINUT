@@ -1,79 +1,74 @@
-# Correction Syntaxe Nixpacks - Erreur Résolue
+# Nixpacks - Correction finale pour erreur "Not a directory"
 
-## Erreur identifiée ❌
+## 🔍 Problème identifié
 ```
-Failed to parse Nixpacks config file `nixpacks.toml`
-invalid type: map, expected a sequence for key `providers` at line 23 column 1
+Error: Writing Dockerfile
+Caused by:
+0: Creating Dockerfile file
+1: Not a directory (os error 20)
 ```
 
-## Problème
-La syntaxe `[providers]` était incorrecte. Nixpacks attend une liste de providers, pas un objet.
+## 🛠️ Solution appliquée
 
-## Correction appliquée ✅
-
-### Avant (incorrect) :
+### 1. Correction nixpacks.toml
 ```toml
-[providers]
-node = true
-```
-
-### Après (correct) :
-```toml
-providers = ["node"]
-```
-
-## Fichier nixpacks.toml corrigé
-
-```toml
-# Configuration Nixpacks pour ASSURMINUT CRM
-# Force l'utilisation du serveur Express au lieu de build statique
-
-providers = ["node"]
+providers = ["node", "environment"]
 
 [variables]
 NODE_ENV = "production"
 PORT = "5000"
+NPM_CONFIG_PRODUCTION = "false"
 
 [phases.build]
-dependsOn = ["install"]
-cmds = ["npm run build"]
-
-[phases.install]
-dependsOn = ["setup"]
-cmds = ["npm ci"]
-
-[phases.setup]
-nixPkgs = ["nodejs_18", "npm-9_x", "openssl", "curl", "wget"]
+cmd = "npm run build"
 
 [start]
-cmd = "npm start"
+cmd = "node dist/index.js"
 ```
 
-## Prochaines actions
+### 2. Changements effectués
+- ✅ Ajout provider "environment" 
+- ✅ Définition explicite du PORT=5000
+- ✅ NPM_CONFIG_PRODUCTION=false pour inclure devDependencies
+- ✅ Commande start directe: node dist/index.js
 
-1. **Commitez la correction** :
-```bash
-git add nixpacks.toml
-git commit -m "Fix nixpacks.toml syntax error"
-git push origin main
-```
+## 🔧 Configuration Coolify finale
 
-2. **Redéployez dans Coolify**
-   - Le build devrait maintenant réussir
-   - Nixpacks utilisera le provider Node.js
-   - L'application démarrera avec `npm start`
+**Dans l'interface Coolify :**
+1. **Build Pack** : Nixpacks (par défaut)
+2. **Start Command** : `node dist/index.js`
+3. **Ports** : `5000:5000`
+4. **Variables d'environnement** :
+   ```
+   NODE_ENV=production
+   PORT=5000
+   DATABASE_URL=postgresql://postgres.hiyuhkilffabnjwpkdby:Ucef@1984#@aws-0-eu-west-3.pooler.supabase.com:6543/postgres
+   SESSION_SECRET=assurminut-crm-secret-key-2025-production
+   ```
 
-3. **Vérifiez le résultat**
-   - URL : https://b4ckc8k0c4c8g48cksckggks.31.97.197.34.sslip.io/
-   - Devrait afficher la page de connexion ASSURMINUT
+## 📋 Alternative si Nixpacks échoue encore
 
-## Alternative si problème persiste
+**Passez au Dockerfile manuellement :**
+1. Dans Coolify, changez Build Pack vers **"Dockerfile"**
+2. Start Command : `npm start`
+3. Gardez les mêmes ports et variables
 
-Utilisez le Dockerfile dans les paramètres Coolify :
-1. Settings → Build → Build Pack → "Dockerfile"
-2. Dockerfile location : `./Dockerfile`
-3. Redéployez
+## 🎯 Résultat attendu
+
+Le build devrait maintenant :
+- ✅ Installer les dépendances avec `npm ci`
+- ✅ Builder avec `npm run build` (vite + esbuild)
+- ✅ Démarrer avec `node dist/index.js`
+- ✅ Servir l'application Express complète
+- ✅ Connecter à la base Supabase
+
+## 🚀 Actions immédiates
+
+1. **Commitez les changements** nixpacks.toml
+2. **Redéployez** dans Coolify
+3. **Testez** l'application sur l'URL
+4. **Vérifiez** les health checks
 
 ---
 
-**Le déploiement devrait maintenant réussir avec la syntaxe corrigée !**
+**Cette correction devrait résoudre définitivement l'erreur "Not a directory" !**
