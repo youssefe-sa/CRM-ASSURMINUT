@@ -153,6 +153,7 @@
     "xlsx": "^0.18.5",
     "zod": "^3.24.2",
     "zod-validation-error": "^3.4.0"
+    "vite": "^x.y.z",
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8"
