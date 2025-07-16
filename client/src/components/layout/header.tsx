@@ -42,13 +42,13 @@ export function Header({ title, onNewClient }: HeaderProps) {
           <div className="flex items-center space-x-2">
             <Button variant="ghost" size="sm" className="relative">
               <Bell className="h-4 w-4" />
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                 3
               </span>
             </Button>
             
             {onNewClient && (
-              <Button onClick={onNewClient} className="bg-primary hover:bg-blue-600">
+              <Button onClick={onNewClient} className="bg-primary hover:bg-primary/80">
                 <Plus className="h-4 w-4 mr-2" />
                 Nouveau client
               </Button>

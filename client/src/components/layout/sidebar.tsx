@@ -37,12 +37,14 @@ export function Sidebar() {
     <nav className="bg-white shadow-lg w-64 min-h-screen border-r border-slate-200">
       <div className="p-6 border-b border-slate-200">
         <div className="flex items-center space-x-3">
-          <div className="bg-primary rounded-lg p-2">
-            <Shield className="text-white h-6 w-6" />
-          </div>
+          <img 
+            src="/attached_assets/Assur-Minue-1_1752657519683.png" 
+            alt="ASSURMINUT Logo" 
+            className="h-10 w-auto object-contain"
+          />
           <div>
-            <h1 className="text-xl font-bold text-slate-800">CRM Assurance</h1>
-            <p className="text-sm text-slate-500">Mutuelle Santé</p>
+            <h1 className="text-xl font-bold text-primary">ASSURMINUT</h1>
+            <p className="text-sm text-muted-foreground">Assurance Auto</p>
           </div>
         </div>
       </div>
@@ -58,7 +60,7 @@ export function Sidebar() {
                 <Link href={item.path}>
                   <span className={`flex items-center space-x-3 rounded-lg px-4 py-3 font-medium transition-colors cursor-pointer ${
                     isActive 
-                      ? "text-primary bg-blue-50" 
+                      ? "text-primary bg-primary/10" 
                       : "text-slate-600 hover:text-primary hover:bg-slate-50"
                   }`}>
                     <Icon className="w-5 h-5" />

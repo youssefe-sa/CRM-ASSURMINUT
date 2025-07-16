@@ -44,11 +44,13 @@ export default function Login() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
-            <div className="bg-primary rounded-lg p-3">
-              <Shield className="h-8 w-8 text-white" />
-            </div>
+            <img 
+              src="/attached_assets/Assur-Minue-1_1752657519683.png" 
+              alt="ASSURMINUT Logo" 
+              className="h-16 w-auto object-contain"
+            />
           </div>
-          <CardTitle className="text-2xl font-bold text-center">CRM Assurance</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center text-primary">ASSURMINUT</CardTitle>
           <CardDescription className="text-center">
             Connectez-vous à votre espace courtier
           </CardDescription>

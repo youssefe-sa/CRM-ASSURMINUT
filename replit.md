@@ -1,8 +1,17 @@
-# CRM Assurance - Insurance Broker CRM System
+# ASSURMINUT - CRM Assurance Auto
 
 ## Overview
 
-This is a modern, reactive, and secure web CRM application designed specifically for insurance brokers specializing in health mutual insurance. The system manages client information, quotes, documents, appointments, and call logs with a focus on French insurance market requirements.
+This is a modern, reactive, and secure web CRM application designed specifically for insurance brokers specializing in auto insurance. The system manages client information, quotes, documents, appointments, and call logs with a focus on French insurance market requirements. The application has been rebranded to ASSURMINUT with a custom logo and corporate blue/red color scheme.
+
+## Recent Changes (July 16, 2025)
+
+✓ Fixed 500 error in call creation by updating schema validation for prochainRappel field
+✓ Rebranded application from "CRM Assurance" to "ASSURMINUT"
+✓ Applied new logo and corporate color palette (blue #3B4D73, red #FF5C5C)
+✓ Updated all UI components to use new brand colors
+✓ Enhanced visual identity across login page, sidebar, and headers
+✓ Added proper favicon and SEO metadata with new branding
 
 ## User Preferences
 
