@@ -112,11 +112,35 @@ Pour optimiser les performances :
 ## Statistiques Actuelles
 
 - **Utilisateurs:** 9 (1 admin + 8 agents)
-- **Clients:** 1
+- **Clients:** 3 (1 client initial + 2 clients importés)
 - **Devis:** 1
 - **Documents:** 1
 - **Rappels:** 0
 - **Appels:** 1
+
+## Fonctionnalités d'Import
+
+### Import de Portefeuille Client
+- **Formats supportés:** Excel (.xlsx, .xls), CSV (.csv)
+- **Taille maximale:** 10MB par fichier
+- **Validation automatique:** Schéma Zod avec gestion d'erreurs
+- **Mapping intelligent:** Reconnaissance automatique des colonnes
+- **Résultats détaillés:** Statistiques d'import et rapport d'erreurs
+
+### Colonnes Reconnues pour l'Import
+- `nom`, `Nom`, `NOM`, `lastname`, `last_name`
+- `prenom`, `Prenom`, `PRENOM`, `firstname`, `first_name`
+- `email`, `Email`, `EMAIL`, `mail`
+- `telephone`, `Telephone`, `TELEPHONE`, `phone`, `tel`
+- `date_naissance`, `dateNaissance`, `birth_date`, `naissance`
+- `numero_secu`, `numeroSecu`, `secu`, `social_security`
+- `adresse`, `Adresse`, `ADRESSE`, `address`
+- `situation_familiale`, `situationFamiliale`, `marital_status`
+- `nombre_ayants_droit`, `ayants_droit`, `dependents`
+- `mutuelle_actuelle`, `mutuelleActuelle`, `current_insurance`
+- `niveau_couverture`, `niveauCouverture`, `coverage_level`
+- `statut`, `Statut`, `STATUS`, `status`
+- `notes`, `Notes`, `NOTES`, `comments`
 
 ## Commandes Utiles
 
@@ -129,6 +153,9 @@ npm run db:generate
 
 # Vérifier la structure de la base
 npm run db:introspect
+
+# Tester l'import avec le fichier exemple
+# Utiliser exemple_import.csv dans l'interface
 ```
 
 ## Sécurité
