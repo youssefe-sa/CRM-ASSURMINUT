@@ -101,13 +101,21 @@ Pour optimiser les performances :
 - `idx_clients_nom` - Index sur le nom des clients
 - `idx_clients_email` - Index sur l'email des clients
 - `idx_clients_statut` - Index sur le statut des clients
+- `idx_clients_created_by` - Index sur created_by dans clients
 - `idx_devis_client_id` - Index sur client_id dans devis
 - `idx_devis_statut` - Index sur le statut des devis
+- `idx_devis_created_by` - Index sur created_by dans devis
 - `idx_documents_client_id` - Index sur client_id dans documents
+- `idx_documents_devis_id` - Index sur devis_id dans documents
+- `idx_documents_type` - Index sur le type de document
 - `idx_rappels_date` - Index sur date_rappel
 - `idx_rappels_client_id` - Index sur client_id dans rappels
+- `idx_rappels_statut` - Index sur le statut des rappels
+- `idx_rappels_created_by` - Index sur created_by dans rappels
 - `idx_appels_client_id` - Index sur client_id dans appels
 - `idx_appels_date` - Index sur date_appel
+- `idx_appels_statut` - Index sur le statut des appels
+- `idx_appels_created_by` - Index sur created_by dans appels
 
 ## Statistiques Actuelles
 

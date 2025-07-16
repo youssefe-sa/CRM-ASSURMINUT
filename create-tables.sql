@@ -97,13 +97,25 @@ CREATE TABLE IF NOT EXISTS appels (
 CREATE INDEX IF NOT EXISTS idx_clients_nom ON clients(nom);
 CREATE INDEX IF NOT EXISTS idx_clients_email ON clients(email);
 CREATE INDEX IF NOT EXISTS idx_clients_statut ON clients(statut);
+CREATE INDEX IF NOT EXISTS idx_clients_created_by ON clients(created_by);
+
 CREATE INDEX IF NOT EXISTS idx_devis_client_id ON devis(client_id);
 CREATE INDEX IF NOT EXISTS idx_devis_statut ON devis(statut);
+CREATE INDEX IF NOT EXISTS idx_devis_created_by ON devis(created_by);
+
 CREATE INDEX IF NOT EXISTS idx_documents_client_id ON documents(client_id);
+CREATE INDEX IF NOT EXISTS idx_documents_devis_id ON documents(devis_id);
+CREATE INDEX IF NOT EXISTS idx_documents_type ON documents(type);
+
 CREATE INDEX IF NOT EXISTS idx_rappels_date ON rappels(date_rappel);
 CREATE INDEX IF NOT EXISTS idx_rappels_client_id ON rappels(client_id);
+CREATE INDEX IF NOT EXISTS idx_rappels_statut ON rappels(statut);
+CREATE INDEX IF NOT EXISTS idx_rappels_created_by ON rappels(created_by);
+
 CREATE INDEX IF NOT EXISTS idx_appels_client_id ON appels(client_id);
 CREATE INDEX IF NOT EXISTS idx_appels_date ON appels(date_appel);
+CREATE INDEX IF NOT EXISTS idx_appels_statut ON appels(statut);
+CREATE INDEX IF NOT EXISTS idx_appels_created_by ON appels(created_by);
 
 -- Insertion d'un utilisateur admin par défaut
 INSERT INTO users (username, email, password, nom, prenom, role) 
