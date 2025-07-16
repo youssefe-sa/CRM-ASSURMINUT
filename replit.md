@@ -16,6 +16,8 @@ This is a modern, reactive, and secure web CRM application designed specifically
 ✓ Created comprehensive database schema with all necessary tables
 ✓ Set up admin user account (admin/admin123)
 ✓ Generated SQL creation script and documentation
+✓ Created 8 agent accounts with realistic names and credentials
+✓ All agents use password: admin123
 
 ## User Preferences
 

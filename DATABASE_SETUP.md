@@ -111,7 +111,7 @@ Pour optimiser les performances :
 
 ## Statistiques Actuelles
 
-- **Utilisateurs:** 1
+- **Utilisateurs:** 9 (1 admin + 8 agents)
 - **Clients:** 1
 - **Devis:** 1
 - **Documents:** 1
