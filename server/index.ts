@@ -1,38 +1,30 @@
-import express, { type Request, Response, NextFunction } from "express";
+// server/index.ts
+import express, { type Request, type Response, type NextFunction } from "express";
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use("/attached_assets", express.static("attached_assets"));
 
-// Servir les fichiers statiques des assets
-app.use('/attached_assets', express.static('attached_assets'));
-
+// Logging middleware
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
+  let capturedJson: Record<string, any> | undefined;
 
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
+  const originalJson = res.json;
+  res.json = function (body, ...args) {
+    capturedJson = body;
+    return originalJson.apply(res, [body, ...args]);
   };
 
   res.on("finish", () => {
-    const duration = Date.now() - start;
     if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-
-      log(logLine);
+      let msg = `${req.method} ${path} ${res.statusCode} in ${Date.now() - start}ms`;
+      if (capturedJson) msg += ` :: ${JSON.stringify(capturedJson)}`;
+      console.log(msg.length > 80 ? `${msg.slice(0, 79)}…` : msg);
     }
   });
 
@@ -44,28 +36,20 @@ app.use((req, res, next) => {
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    res.status(status).json({ message });
+    res.status(status).json({ message: err.message || "Internal Server Error" });
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
+  if (process.env.NODE_ENV === "development") {
+    const { setupVite } = await import("./vite-dev.js");
     await setupVite(app, server);
   } else {
+    const { serveStatic } = await import("./vite-prod.js");
     serveStatic(app);
   }
 
-  // Use PORT environment variable or default to 5000
-  const port = parseInt(process.env.PORT || "5000");
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
+  const port = parseInt(process.env.PORT || "5000", 10);
+  server.listen({ port, host: "0.0.0.0", reusePort: true }, () => {
+    console.log(`🚀 Server running in ${process.env.NODE_ENV} mode on port ${port}`);
   });
 })();
