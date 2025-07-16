@@ -187,6 +187,8 @@ export const insertClientSchema = createInsertSchema(clients).omit({
   createdAt: true,
   updatedAt: true,
   createdBy: true,
+}).extend({
+  dateNaissance: z.string().min(1, "La date de naissance est requise").transform((val) => new Date(val)),
 });
 
 export const insertDevisSchema = createInsertSchema(devis).omit({
@@ -195,6 +197,8 @@ export const insertDevisSchema = createInsertSchema(devis).omit({
   createdAt: true,
   updatedAt: true,
   createdBy: true,
+}).extend({
+  dateValidite: z.string().min(1, "La date de validité est requise").transform((val) => new Date(val)),
 });
 
 export const insertDocumentSchema = createInsertSchema(documents).omit({
@@ -206,12 +210,17 @@ export const insertRappelSchema = createInsertSchema(rappels).omit({
   id: true,
   createdAt: true,
   createdBy: true,
+}).extend({
+  dateRappel: z.string().min(1, "La date de rappel est requise").transform((val) => new Date(val)),
 });
 
 export const insertAppelSchema = createInsertSchema(appels).omit({
   id: true,
   createdAt: true,
   createdBy: true,
+}).extend({
+  dateAppel: z.string().min(1, "La date d'appel est requise").transform((val) => new Date(val)),
+  prochainRappel: z.string().optional().transform((val) => val ? new Date(val) : undefined),
 });
 
 // Types TypeScript

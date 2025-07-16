@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { Phone, Save } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -73,6 +73,9 @@ export function CallLogModal({ open, onClose, selectedClientId }: CallLogModalPr
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">Enregistrer un appel</DialogTitle>
+          <DialogDescription>
+            Enregistrez les détails d'un appel avec un client.
+          </DialogDescription>
         </DialogHeader>
         
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { Upload, X } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -106,6 +106,9 @@ export function DocumentUploadModal({ open, onClose, selectedClientId }: Documen
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">Téléverser un document</DialogTitle>
+          <DialogDescription>
+            Téléversez un document pour un client ou un devis.
+          </DialogDescription>
         </DialogHeader>
         
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
