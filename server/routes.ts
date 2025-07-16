@@ -4,6 +4,7 @@ import session from "express-session";
 import { storage } from "./storage";
 import { authService } from "./auth";
 import { pdfService } from "./pdf";
+import { pool } from "./db";
 import { loginSchema, insertClientSchema, insertDevisSchema, insertRappelSchema, insertAppelSchema } from "@shared/schema";
 import { ZodError } from "zod";
 import multer from "multer";
@@ -72,6 +73,36 @@ const importUpload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Health check endpoints pour Coolify
+  app.get('/health', (req, res) => {
+    res.status(200).json({ 
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV || 'development'
+    });
+  });
+
+  app.get('/api/health', async (req, res) => {
+    try {
+      // Vérifier la connexion à la base de données
+      await pool.query('SELECT 1');
+      res.status(200).json({ 
+        status: 'healthy',
+        database: 'connected',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime()
+      });
+    } catch (error) {
+      res.status(503).json({ 
+        status: 'unhealthy',
+        database: 'disconnected',
+        error: error.message,
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+
   // Configuration des sessions
   app.use(session({
     secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',

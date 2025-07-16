@@ -24,6 +24,9 @@ This is a modern, reactive, and secure web CRM application designed specifically
 ✓ Created complete Coolify deployment guide with Docker configuration
 ✓ Added deployment scripts and Docker files for production
 ✓ Configured automatic deployment with GitHub webhooks
+✓ Fixed Coolify health check issues with proper endpoints
+✓ Added /health and /api/health endpoints for monitoring
+✓ Configured Docker health checks for production deployment
 
 ## User Preferences
 

@@ -6,7 +6,8 @@ RUN apk add --no-cache \
     python3 \
     make \
     g++ \
-    postgresql-client
+    postgresql-client \
+    curl
 
 # Définir le répertoire de travail
 WORKDIR /app
@@ -38,6 +39,10 @@ RUN chown -R node:node /app/uploads
 
 # Utiliser l'utilisateur node pour la sécurité
 USER node
+
+# Health check pour Coolify
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:5000/health || exit 1
 
 # Commande de démarrage
 CMD ["npm", "start"]
