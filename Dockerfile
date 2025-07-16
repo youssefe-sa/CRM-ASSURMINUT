@@ -15,8 +15,8 @@ WORKDIR /app
 # Copier les fichiers package
 COPY package*.json ./
 
-# Installer les dépendances
-RUN npm ci --only=production
+# Installer toutes les dépendances (dev + prod pour le build)
+RUN npm ci
 
 # Copier le code source
 COPY . .
@@ -26,6 +26,9 @@ RUN mkdir -p uploads dist
 
 # Builder l'application client
 RUN npm run build
+
+# Nettoyer les dépendances dev après le build
+RUN npm prune --production
 
 # Exposer le port
 EXPOSE 5000
