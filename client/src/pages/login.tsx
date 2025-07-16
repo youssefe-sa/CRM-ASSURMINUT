@@ -45,9 +45,13 @@ export default function Login() {
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
             <img 
-              src="/attached_assets/Assur-Minue-1_1752657519683.png" 
+              src="/assurminut-logo.png" 
               alt="ASSURMINUT Logo" 
               className="h-16 w-auto object-contain"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+              }}
             />
           </div>
           <CardTitle className="text-2xl font-bold text-center text-primary">ASSURMINUT</CardTitle>

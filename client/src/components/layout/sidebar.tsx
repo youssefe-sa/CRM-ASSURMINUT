@@ -38,9 +38,13 @@ export function Sidebar() {
       <div className="p-6 border-b border-slate-200">
         <div className="flex items-center space-x-3">
           <img 
-            src="/attached_assets/Assur-Minue-1_1752657519683.png" 
+            src="/assurminut-logo.png" 
             alt="ASSURMINUT Logo" 
             className="h-10 w-auto object-contain"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+            }}
           />
           <div>
             <h1 className="text-xl font-bold text-primary">ASSURMINUT</h1>
