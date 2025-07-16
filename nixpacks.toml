@@ -1,6 +1,8 @@
 # Configuration Nixpacks pour ASSURMINUT CRM
 # Force l'utilisation du serveur Express au lieu de build statique
 
+providers = ["node"]
+
 [variables]
 NODE_ENV = "production"
 PORT = "5000"
@@ -18,7 +20,3 @@ nixPkgs = ["nodejs_18", "npm-9_x", "openssl", "curl", "wget"]
 
 [start]
 cmd = "npm start"
-
-# Forcer le provider pour éviter la détection SPA
-[providers]
-node = true
