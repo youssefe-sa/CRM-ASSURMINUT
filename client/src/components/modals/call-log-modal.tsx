@@ -37,7 +37,7 @@ export function CallLogModal({ open, onClose, selectedClientId }: CallLogModalPr
       duree: 0,
       statut: "repondu",
       notes: "",
-      prochainRappel: null,
+      prochainRappel: "",
     },
   });
 

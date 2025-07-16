@@ -395,14 +395,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Non autorisé" });
       }
       
+      console.log("Données reçues pour l'appel:", req.body);
+      
       const appelData = insertAppelSchema.parse({
         ...req.body,
         createdBy: req.session.user.id
       });
       
+      console.log("Données après validation:", appelData);
+      
       const appel = await storage.createAppel(appelData);
       res.status(201).json(appel);
     } catch (error) {
+      console.error("Erreur lors de la création de l'appel:", error);
       if (error instanceof ZodError) {
         return res.status(400).json({ message: "Données invalides", errors: error.errors });
       }

@@ -220,7 +220,7 @@ export const insertAppelSchema = createInsertSchema(appels).omit({
   createdBy: true,
 }).extend({
   dateAppel: z.string().min(1, "La date d'appel est requise").transform((val) => new Date(val)),
-  prochainRappel: z.string().optional().transform((val) => val ? new Date(val) : undefined),
+  prochainRappel: z.string().optional().nullable().transform((val) => val && val !== "" ? new Date(val) : null),
 });
 
 // Types TypeScript
