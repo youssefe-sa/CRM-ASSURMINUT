@@ -21,8 +21,8 @@ RUN mkdir -p uploads dist
 # Build l'application
 RUN npm run build
 
-# Nettoyer les dépendances dev
-RUN npm prune --production
+# Vérifier que le build a réussi
+RUN ls -la dist/
 
 # Exposer le port
 EXPOSE 5000
@@ -35,5 +35,5 @@ ENV PORT=5000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:5000/health || exit 1
 
-# Démarrer l'application
-CMD ["npm", "start"]
+# Démarrer l'application avec le script de production
+CMD ["node", "start-production.js"]

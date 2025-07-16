@@ -20,4 +20,4 @@ cmds = ["npm ci"]
 nixPkgs = ["nodejs_18", "npm-9_x", "openssl", "curl", "wget"]
 
 [start]
-cmd = "node dist/index.js"
+cmd = "node start-production.js"

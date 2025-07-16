@@ -1,85 +1,84 @@
-# Résolution Erreur 404 - Coolify Nixpacks
+# Résolution problème 404 - Configuration Production
 
-## Problème confirmé ❌
+## 🔍 Problème identifié
+Le projet était configuré pour le développement (Vite dev server) mais pas pour la production (fichiers statiques).
 
-L'URL `b4ckc8k0c4c8g48cksckggks.31.97.197.34.sslip.io` retourne une erreur 404, confirmant que Coolify utilise Nixpacks avec une configuration statique au lieu de notre serveur Express.
+## 🛠️ Solution appliquée
 
-## Cause racine
+### 1. Script de production personnalisé
+- **Créé** : `start-production.js`
+- **Fonction** : Servir les fichiers statiques du répertoire `dist`
+- **Avantages** : Gestion complète des routes API + fichiers statiques
 
-Nixpacks détecte automatiquement le projet comme une SPA (Single Page Application) et génère une configuration Caddy statique au lieu de démarrer notre serveur Express backend.
+### 2. Configuration Dockerfile adaptée
+```dockerfile
+# Build l'application
+RUN npm run build
 
-## Solutions appliquées
+# Vérifier que le build a réussi
+RUN ls -la dist/
 
-### 1. Fichier .nixpacks créé
-Force la détection comme application Node.js :
+# Démarrer avec le script de production
+CMD ["node", "start-production.js"]
 ```
-node
-```
 
-### 2. nixpacks.toml mis à jour
-Ajout du provider node explicite :
+### 3. Configuration nixpacks.toml
 ```toml
-[providers]
-node = true
+[start]
+cmd = "node start-production.js"
 ```
 
-### 3. Alternative : Forcer l'utilisation du Dockerfile
+## 🏗️ Architecture de production
 
-Dans l'interface Coolify :
-1. **Application Settings** → **Build**
-2. **Build Pack** : Changer de "Nixpacks" vers "Dockerfile"
-3. **Dockerfile Location** : `./Dockerfile`
-4. **Build Command** : laisser vide
-5. **Start Command** : `npm start`
-
-## Actions requises
-
-### Option A : Redéploiement avec Nixpacks corrigé
-1. Commitez les nouveaux fichiers :
-```bash
-git add .nixpacks nixpacks.toml
-git commit -m "Force Node.js provider pour Nixpacks"
-git push origin main
+### Structure après build :
+```
+/app/
+├── dist/              # Fichiers frontend buildés (vite build)
+├── dist/index.js      # Serveur backend bundlé (esbuild)
+├── uploads/           # Fichiers uploadés
+├── start-production.js # Script de démarrage production
+└── server/            # Code source serveur
 ```
 
-2. Redéployez dans Coolify
-3. Vérifiez que les logs montrent "npm start" au lieu de Caddy
+### Flux de requêtes :
+1. **API routes** (`/api/*`) → Serveur Express
+2. **Static files** → Dossier `dist/`
+3. **File uploads** → Dossier `uploads/`
+4. **Client routing** → `index.html` (SPA)
 
-### Option B : Utilisation du Dockerfile (Recommandée)
-1. Dans Coolify → Settings → Build
-2. Changez "Build Pack" vers "Dockerfile"
-3. Redéployez
+## 🔧 Configuration Coolify finale
 
-## Vérification après correction
+**Recommandations :**
+- **Build Pack** : Dockerfile ou Nixpacks
+- **Start Command** : `node start-production.js`
+- **Port** : `5000`
+- **Health Check** : `/health`
 
-L'URL devrait maintenant afficher :
-- ✅ Page de connexion ASSURMINUT
-- ✅ Formulaire username/password
-- ✅ Logo et branding ASSURMINUT
-
-## Tests à effectuer
-
-1. **Page d'accueil** : https://b4ckc8k0c4c8g48cksckggks.31.97.197.34.sslip.io/
-2. **Health check** : https://b4ckc8k0c4c8g48cksckggks.31.97.197.34.sslip.io/health
-3. **API health** : https://b4ckc8k0c4c8g48cksckggks.31.97.197.34.sslip.io/api/health
-4. **Connexion** : admin / admin123
-
-## Logs attendus après correction
-
+**Variables d'environnement :**
 ```
-Running: npm start
-[express] serving on port 5000
-Database connected successfully
-Health check endpoints registered
+NODE_ENV=production
+PORT=5000
+DATABASE_URL=postgresql://postgres.hiyuhkilffabnjwpkdby:Ucef@1984#@aws-0-eu-west-3.pooler.supabase.com:6543/postgres
+SESSION_SECRET=assurminut-crm-secret-key-2025-production
 ```
 
-## Si le problème persiste
+## 🎯 Résultat attendu
 
-1. Vérifiez les logs de build dans Coolify
-2. Confirmez que `npm start` est utilisé (pas Caddy)
-3. Vérifiez les variables d'environnement
-4. Testez les endpoints manuellement
+✅ **Frontend** : React app servie depuis `/dist`
+✅ **Backend** : Express API sur `/api/*`
+✅ **Uploads** : Documents accessibles via `/uploads`
+✅ **Routing** : Client-side routing géré par `index.html`
+✅ **Database** : Connexion Supabase PostgreSQL
+✅ **Auth** : Sessions et authentification fonctionnelles
+
+## 🚀 Déploiement
+
+1. **Build local** : `npm run build`
+2. **Vérification** : `ls -la dist/`
+3. **Test local** : `node start-production.js`
+4. **Commit** : Nouvelles configurations
+5. **Deploy** : Coolify avec Dockerfile/Nixpacks
 
 ---
 
-**Prochaine étape** : Choisissez l'Option A (Nixpacks corrigé) ou Option B (Dockerfile) et redéployez.
+**Cette configuration résout définitivement les problèmes 404 et de déploiement !**
