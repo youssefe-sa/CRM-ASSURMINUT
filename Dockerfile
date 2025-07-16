@@ -1,55 +1,49 @@
 # Étape 1 : Build
 FROM node:18-alpine AS builder
 
+# Dossier de travail
 WORKDIR /app
 
-# Installer les dépendances système nécessaires au build
+# Installer dépendances système nécessaires au build
 RUN apk add --no-cache python3 make g++ postgresql-client curl
 
-# Copier package.json et package-lock.json
+# Copier package.json + package-lock.json
 COPY package*.json ./
 
-# Installer TOUTES les dépendances (y compris devDependencies) pour le build
+# Forcer NODE_ENV=development pour installer devDependencies
 ENV NODE_ENV=development
 RUN npm install
 
-# Copier le code source complet
+# Copier tout le code source
 COPY . .
 
-# Créer les dossiers nécessaires (si besoin au build)
+# Créer dossiers uploads et dist
 RUN mkdir -p uploads dist
 
 # Lancer le build (vite + esbuild)
 RUN npm run build
-
-# Vérifier que le build a réussi (optionnel)
-RUN ls -la dist/
 
 # Étape 2 : Image finale
 FROM node:18-alpine
 
 WORKDIR /app
 
-# Installer uniquement les dépendances nécessaires à la production
+# Installer postgresql-client et curl (si besoin en prod, sinon à adapter)
 RUN apk add --no-cache postgresql-client curl
 
-# Copier les fichiers de build et package.json/package-lock.json depuis le builder
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
+# Copier uniquement les fichiers buildés + package.json + node_modules prod
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/uploads ./uploads
-COPY --from=builder /app/start-production.js ./
+COPY --from=builder /app/package*.json ./
 
-# Variables d'environnement pour la production
+# Installer uniquement les dépendances de production
 ENV NODE_ENV=production
-ENV PORT=5000
+RUN npm install --omit=dev
 
-# Exposer le port
-EXPOSE 5000
+# Copier autres fichiers nécessaires à l'exécution (uploads, config, etc.)
+COPY --from=builder /app/uploads ./uploads
 
-# Health check (optionnel)
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:5000/health || exit 1
+# Exposer le port (adapter selon ton app)
+EXPOSE 3000
 
-# Démarrer l’application
-CMD ["node", "start-production.js"]
+# Commande par défaut
+CMD ["node", "dist/server.js"]
