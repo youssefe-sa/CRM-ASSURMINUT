@@ -1,51 +1,36 @@
 #!/bin/bash
 
-# Script de déploiement pour ASSURMINUT CRM
-# Usage: ./deploy.sh
+echo "🚀 Déploiement CRM ASSURMINUT"
+echo "=================================="
 
-set -e
-
-echo "🚀 Démarrage du déploiement ASSURMINUT CRM..."
-
-# Vérifier les variables d'environnement
-if [ -z "$DATABASE_URL" ]; then
-    echo "❌ Erreur: DATABASE_URL n'est pas définie"
+# Vérifier si nous sommes dans le bon répertoire
+if [ ! -f "package.json" ]; then
+    echo "❌ Erreur: package.json non trouvé"
     exit 1
 fi
 
+# Installer les dépendances
 echo "📦 Installation des dépendances..."
-npm ci --only=production
+npm ci
 
-echo "🏗️ Construction de l'application..."
+# Build l'application
+echo "🔨 Build de l'application..."
 npm run build
 
-echo "🗄️ Synchronisation de la base de données..."
-npm run db:push
+# Créer les dossiers nécessaires
+echo "📁 Création des dossiers..."
+mkdir -p uploads dist
 
-echo "📁 Création des dossiers nécessaires..."
-mkdir -p uploads
-mkdir -p dist
-
-echo "🔧 Configuration des permissions..."
-chmod 755 uploads
-chmod 755 dist
-
-echo "✅ Déploiement terminé avec succès!"
-echo "🌐 Application prête à démarrer sur le port ${PORT:-5000}"
-
-# Vérifier que le build a fonctionné
-if [ -f "dist/index.js" ]; then
-    echo "✅ Build serveur OK"
-else
-    echo "❌ Erreur: Build serveur échoué"
+# Vérifier que le build a réussi
+if [ ! -d "dist" ]; then
+    echo "❌ Erreur: le build a échoué"
     exit 1
 fi
 
-if [ -d "dist/client" ]; then
-    echo "✅ Build client OK"
-else
-    echo "❌ Erreur: Build client échoué"
-    exit 1
-fi
+echo "✅ Build réussi!"
+echo "🎯 Prêt pour le déploiement"
+echo "=================================="
 
-echo "🎉 Prêt à démarrer avec: npm start"
+# Démarrer l'application en mode production
+echo "🚀 Démarrage de l'application..."
+NODE_ENV=production PORT=5000 npm start

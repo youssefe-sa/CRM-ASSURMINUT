@@ -1,21 +1,15 @@
 # Dockerfile pour ASSURMINUT CRM
 FROM node:18-alpine
 
-# Installer les dépendances système
-RUN apk add --no-cache \
-    python3 \
-    make \
-    g++ \
-    postgresql-client \
-    curl
-
-# Définir le répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers package
+# Installer les dépendances système
+RUN apk add --no-cache python3 make g++ postgresql-client curl
+
+# Copier package.json et package-lock.json
 COPY package*.json ./
 
-# Installer toutes les dépendances (dev + prod pour le build)
+# Installer toutes les dépendances
 RUN npm ci
 
 # Copier le code source
@@ -24,10 +18,10 @@ COPY . .
 # Créer les dossiers nécessaires
 RUN mkdir -p uploads dist
 
-# Builder l'application client
+# Build l'application
 RUN npm run build
 
-# Nettoyer les dépendances dev après le build
+# Nettoyer les dépendances dev
 RUN npm prune --production
 
 # Exposer le port
@@ -37,15 +31,9 @@ EXPOSE 5000
 ENV NODE_ENV=production
 ENV PORT=5000
 
-# Changer les permissions pour les uploads
-RUN chown -R node:node /app/uploads
-
-# Utiliser l'utilisateur node pour la sécurité
-USER node
-
-# Health check pour Coolify
+# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:5000/health || exit 1
 
-# Commande de démarrage
+# Démarrer l'application
 CMD ["npm", "start"]
