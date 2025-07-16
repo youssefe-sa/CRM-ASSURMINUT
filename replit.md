@@ -21,6 +21,9 @@ This is a modern, reactive, and secure web CRM application designed specifically
 ✓ Added client portfolio import functionality (Excel/CSV)
 ✓ Created import interface with validation and error handling
 ✓ Added support for bulk client data import with mapping
+✓ Created complete Coolify deployment guide with Docker configuration
+✓ Added deployment scripts and Docker files for production
+✓ Configured automatic deployment with GitHub webhooks
 
 ## User Preferences
 
